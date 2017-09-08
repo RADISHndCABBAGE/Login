@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <script type="text/javascript">
+        function openIndex(){
+            console.log('aaa')
+            //解析数据，如果返回json {"ok":"true"}则跳转页面，如果返回的json为{"ok":"false"}则重新加载本页面
+           $.getJSON("http://localhost:8888/login",function(data) {
+           if($("#ok")=='yes'){
+               window.location.href="http://localhost:3000/index.html"
+           }else{
+               window.location.href="http://localhost:3000/login.html"
+           }
+
+        });
+
+        }
+
+    </script>
+</head>
+<body>
+    <form action="http://localhost:8888/login" method="post">
+        账户：<input type="text" name="username" ><br>
+        密码：<input type="password" name="password" ><br>
+        <input type="submit" value="提交" onkeyup="openIndex()">
+    </form>
+</body>
+</html>

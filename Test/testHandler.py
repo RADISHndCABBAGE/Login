@@ -14,12 +14,12 @@ class loginHandler(BaseHandler):
         if vip.password == password:
             self.session['username']= username
             self.session['password']= password
-            data = ujson.dumps(dict(self.session.items()))
-            self.write(data)
-            self.render("../Template/index.html")
+            self.session.save()
+            self.set_header('Content-Type', 'application/json; charset=UTF-8')
+            self.write(ujson.dumps({"ok":"yes"}))
         else:
-            self.render("../Template/login.html")
-        #self.finish()
+            self.set_header('Content-Type', 'application/json; charset=UTF-8')
+            self.write(ujson.dumps({"ok":"no"}))
 
 
 class indexHandler(tornado.web.RequestHandler):
@@ -28,7 +28,4 @@ class indexHandler(tornado.web.RequestHandler):
         self.write(data)
         self.finish()
 
-# class homeHandler(tornado.web.RequestHandler):
-#     def get(self):
-#         self.render("../Template/login.html")
 

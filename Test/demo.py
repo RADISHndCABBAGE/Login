@@ -6,7 +6,7 @@ from tornado.options import define, options
 from tornado.web import Application
 
 from Session.session import SessionManager
-from Test.testHandler import loginHandler, indexHandler, homeHandler
+from Test.testHandler import loginHandler, indexHandler
 
 temp_path = os.path.abspath(os.path.join(os.path.dirname("__file__"), os.path.pardir))
 template_path = os.path.join(temp_path, "Template")
