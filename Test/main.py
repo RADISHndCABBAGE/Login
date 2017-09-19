@@ -1,15 +1,12 @@
-import os
-
 import tornado
 from tornado.ioloop import IOLoop
 from tornado.options import define, options
 from tornado.web import Application
 
-from Session.session import SessionManager
-from Test.testHandler import loginHandler, indexHandler
+from Utils.session import SessionManager
+from Test.testHandler import loginHandler, indexHandler, Handler
 
-temp_path = os.path.abspath(os.path.join(os.path.dirname("__file__"), os.path.pardir))
-template_path = os.path.join(temp_path, "Template")
+
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -24,11 +21,11 @@ class Application(tornado.web.Application):
             },
         )
         handlers = [
-            # (r"/home",  homeHandler),
+            (r"/test",  Handler),
             (r"/login", loginHandler),
             (r"/index", indexHandler)
         ]
-        tornado.web.Application.__init__(self, handlers,cookie_secret='abcde')
+        tornado.web.Application.__init__(self,handlers)
         self.session_manager = SessionManager(settings["session_secret"], settings["store_options"], settings["session_timeout"])
 
 
@@ -36,6 +33,7 @@ class Application(tornado.web.Application):
 define('port', default=8888, group='application')
 
 if __name__ == "__main__":
+    debug = True
     application = Application()
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()

@@ -1,7 +1,4 @@
-#coding=utf-8
-from Session.session import Session
-
-__author__ = 'karldoenitz'
+from Utils.session import Session
 
 import tornado.web
 

@@ -1,9 +1,9 @@
-import ujson
 import json
+import ujson
 import tornado
-
 from Database import user_database
 from Handler.base import BaseHandler
+from Utils.mylog import log
 
 
 class loginHandler(BaseHandler):
@@ -22,10 +22,16 @@ class loginHandler(BaseHandler):
             self.write(ujson.dumps({"ok":"no"}))
 
 
-class indexHandler(tornado.web.RequestHandler):
+class indexHandler(BaseHandler):
     def get(self):
-        data = ujson.dumps(dict(self.session.items()))
+        data = json.dumps(dict(self.session.items()))
+        log.info(data)
         self.write(data)
         self.finish()
+
+
+class Handler(tornado.web.RequestHandler):
+    def get(self):
+        print(self.get_cookie("session_id"))
 
 
