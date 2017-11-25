@@ -41,28 +41,16 @@ class SessionManager(object):
 
             if not request_handler:
                 session_id = None
-                # hmac_key = None
             else:
 
                 session_id = request_handler.get_cookie("session_id")
-                # hmac_key = request_handler.get_cookie("verification")
 
             if not session_id:
 
                 session_exists = False
                 session_id = self._generate_id()
-                hmac_key = self._generate_hmac(session_id)
             else:
                 session_exists = True
-
-            # check_hmac = self._generate_hmac(session_id)
-
-            # if not session_exists:
-            #     hmac_key_byte = hmac_key.encode('utf-8')
-            # if hmac_key_byte != check_hmac.encode('utf-8'):
-            #     raise InvalidSessionException()
-
-            # session = SessionData(session_id,hmac_key)
             session = SessionData(session_id)
 
 
@@ -79,12 +67,12 @@ class SessionManager(object):
         try:
             request_handler.set_cookie("session_id",session.session_id)
         except Exception as e:
-            log.info(e)
-        # request_handler.set_cookie("verification",session.hmac_key)
+            # log.info(e)
+            print(e)
         session_data = ujson.dumps(dict(session.items()))
         try:
             flag = self.redis.setex(session.session_id,self.session_timeout,session_data)
-            log.info("flag:",flag)
+            log.info("flag:%s" % flag)
         except Exception as e:
             log.info(e)
 
@@ -93,24 +81,15 @@ class SessionManager(object):
         new_id = hashlib.sha256(self.secret.encode()+str(uuid.uuid4()).encode())
         return new_id.hexdigest()
 
-    #
-    # def _generate_hmac(self, session_id):
-    #     if isinstance(session_id,bytes):
-    #         return hmac.new(session_id, self.secret.encode('utf-8'), hashlib.sha256).hexdigest()
-    #     else:
-    #         return hmac.new(session_id.encode('utf-8'), self.secret.encode('utf-8'), hashlib.sha256).hexdigest()
-    #
 
 class InvalidSessionException(Exception):
     pass
 
 
 
-
 class SessionData(dict):
     def __init__(self,session_id):
         self.session_id = session_id
-        # self.hmac_key = hmac_key
 
 
 
@@ -125,7 +104,6 @@ class Session(SessionData):
         for key,data in current_session.items():
             self[key] = data
         self.session_id = current_session.session_id
-        # self.hmac_key = current_session.hmac_key
 
     def save(self):
         self.session_manager.set(self.request_handler,self)

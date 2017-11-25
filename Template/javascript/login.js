@@ -9,7 +9,6 @@ function openIndex(e){
        crossDomain: true,
        data: {"username":$('#username').val(),"password":$('#password').val()},
        success: function (response) {
-         console.log(response);
            if(response.ok == 'yes'){
                 window.location.href="/index.html"
            }
@@ -21,3 +20,4 @@ function openIndex(e){
     e.preventDefault()
 
 }
+

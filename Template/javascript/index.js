@@ -2,13 +2,13 @@
  * Created by admin on 2017/9/19.
  */
 
-//向http://localhost:8888/index发送请求，获得json数据并解析。
 $(function () {
   $.ajax({
       url: '/index',
       type: 'GET',
       dataType: 'json',
       timeout: 1000,
+      crossDomain: true,
       cache: false,
       beforeSend: LoadFunction, //加载执行方法
       error: erryFunction,  //错误执行方法
@@ -18,22 +18,29 @@ $(function () {
       $("#list").html('加载中...');
   }
 
-  function erryFunction() {
-      alert("error");
+  function erryFunction(data) {
+      console.log(data)
+      alert("错误");
   }
 
-  function succFunction(tt) {
-      var json = JSON.parse(tt)
-      $.each(json, function (index) {
-          //循环获取数据
-          $("#username").append(json[index].username);
-          $("#password").append(json[index].password);
-      });
-      // var option = eval(tt)
-      // for(var j=0;j<option.length;j++){
-      //     $("#username").append(option[j].username);
-      //     alert("made")
-      //     $("#password").append(option[j].password);
-      // }
+  function succFunction(data) {
+        $("#username").append(data['username'])
+        $("#password").append(data['password'])
+        $("#hobby").append(data['hobby'])
   }
 })
+
+function quit(e){
+    $.ajax({
+        url:"/quit",
+        type:"GET",
+        error: function (data){
+            alert("error");
+            console.log(data);
+        },
+        success: function(){
+            $.cookies.del('session_id');
+        }
+    });
+    e.preventDefault();
+}
